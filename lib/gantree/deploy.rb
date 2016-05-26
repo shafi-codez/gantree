@@ -65,7 +65,7 @@ module Gantree
       version = DeployVersion.new(@options, envs[0])
       @packaged_version = version.run
       puts "packaged_version: #{@packaged_version}"
-      upload_to_s3 
+      upload_to_s3
       create_eb_version
       update_application(envs)
       if @options[:slack]
@@ -77,7 +77,7 @@ module Gantree
         puts "Found Librato Key"
         Librato::Metrics.authenticate @options[:librato]["email"], @options[:librato]["token"]
         Librato::Metrics.annotate :deploys, "deploys",:source => "#{@app}", :start_time => Time.now.to_i
-        puts "Librato metric submitted" 
+        puts "Librato metric submitted"
       end
       env = @envs.find {|e| e =~ /-app/ }
       if env && @options[:release_notes_wiki] && (prod_deploy? || @options[:release_notes_staging])
@@ -142,15 +142,18 @@ module Gantree
         bucket = generate_eb_bucket
       end
     end
-    
-    def generate_eb_bucket 
-      unique_hash = Digest::SHA1.hexdigest ENV['AWS_ACCESS_KEY_ID']
+
+    def generate_eb_bucket
+      unless ENV['AWS_SECRET_ACCESS_KEY'] == nil
+        unique_hash = Digest::SHA1.hexdigest ENV['AWS_ACCESS_KEY_ID']
+      else
+        unique_hash = Digest::SHA1.dexdigest ENV['USER'];
       "eb-bucket-#{unique_hash}"
     end
 
     def prod_deploy?
-      @envs.first.split("-").first == "prod" 
-    end 
+      @envs.first.split("-").first == "prod"
+    end
   end
 end
 

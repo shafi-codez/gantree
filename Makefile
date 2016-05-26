@@ -1,4 +1,4 @@
-VERSION := 0.6.17
+VERSION := 0.6.19
 
 # Change this variable to your organisation s3 bucket
 S3_BUCKET := s3://br-jenkins/gantree
